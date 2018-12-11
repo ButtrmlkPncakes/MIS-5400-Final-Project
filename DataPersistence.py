@@ -140,12 +140,16 @@ for fileName in fileList:
     difficult to keep doing because each time I tried to publish a table to my server, it took 3-4 hours
     to finish running. I did the first table that way, but I was not about to do that for 3 tables for
     each of 4 tax years. Instead, I persisted my data to excel and then imported it directly through
-    SQL Server Management Studio. The code to persist my data was pretty short, here it is:'''
-    #engine = create_engine('mssql+pyodbc://ButtrmlkPncakes@cody-practice.database.windows.net:Avalon09!@cody-practice.database.windows.net/Cody-IRS-Data?driver=SQL+Server+Native+Client+11.0',echo=True,connect_args={'interactive_timeout':30000,'wait_timeout':30000})
+    SQL Server Management Studio. The code to persist my data was pretty short, here it is:''''
+    
+    #from GetCredentials import GetCreds
+    #User,Pass = GetCreds('its me, dummy','let me in')
+    #engine = create_engine('mssql+pyodbc://' + User + '@cody-practice.database.windows.net:' + Pass + '@cody-practice.database.windows.net/Cody-IRS-Data?driver=SQL+Server+Native+Client+11.0',echo=True,connect_args={'interactive_timeout':30000,'wait_timeout':30000})
     #con = engine.connect()
     #TaxYrTable.to_sql(xlFileName,con=con,if_exists='replace',chunksize=1000)
     #SchATable.to_sql(AFileName,con=con,if_exists='replace',chunksize=1000)
     #CreditTable.to_sql(CredFileName,con=con,if_exists='replace',chunksize=1000)
+    
     '''Simple as that! simply make your connection string, then use Pandas' to_sql function instead of
     the to_excel function. I used a chunksize of 1000 because the connection would time out otherwise.
     As an aside, I also went into SQL server and changed the data types to smaller types because otherwise
