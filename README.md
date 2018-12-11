@@ -1,1 +1,3 @@
 # MIS 5400 Final Project
+With this project, I'm getting data downloaded from the IRS website that shows data for every line item on the Form 1040 that we all file each year. This data is segregated by state and zip code, allowing for more meaningful analysis. In my code, I download the files, clean them up, segregate out the columns I want to keep into three tables that I then persist to SQL/Excel. I can then query the database as desired. 
+After that, I take the data tables in SQL and query them into pandas dataframes so I can do some analysis and create visuals with matplotlib/seaborn to add value to the data.
