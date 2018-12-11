@@ -7,7 +7,7 @@ import pandas as pd
 from sqlalchemy import create_engine
 import GetCredentials
 
-User,Pass = GetCredentials.GetCreds('its me,dummy','let me in')
+User,Pass = GetCredentials.GetCreds('its me, dummy','let me in')
 
 CONNECTION_STRING = 'Driver={ODBC Driver 17 for SQL Server};Server=cody-practice.database.windows.net,1433;Database=Cody-IRS-Data;Uid=' + User + '@cody-practice;Pwd=' + Pass + ';'
 
