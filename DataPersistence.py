@@ -140,7 +140,7 @@ for fileName in fileList:
     difficult to keep doing because each time I tried to publish a table to my server, it took 3-4 hours
     to finish running. I did the first table that way, but I was not about to do that for 3 tables for
     each of 4 tax years. Instead, I persisted my data to excel and then imported it directly through
-    SQL Server Management Studio. The code to persist my data was pretty short, here it is:''''
+    SQL Server Management Studio. The code to persist my data was pretty short, here it is:'''
     
     #from GetCredentials import GetCreds
     #User,Pass = GetCreds('its me, dummy','let me in')
