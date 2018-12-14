@@ -20,20 +20,20 @@ User,Pass = GetCredentials.GetCreds('its me, dummy','let me in')
 graphList = ['OverpayAmt','TaxDueAmt']
 
 def GetData():
-    engine = create_engine(
-        'mssql+pyodbc://' + User + '@cody-practice.database.windows.net:' + Pass + '@cody-practice.database.windows.net/Cody-IRS-Data?driver=SQL+Server+Native+Client+11.0',
-        echo=True, connect_args={'interactive_timeout': 30000, 'wait_timeout': 30000})
-    con = engine.connect()
+    #engine = create_engine(
+    #    'mssql+pyodbc://' + User + '@cody-practice.database.windows.net:' + Pass + '@cody-practice.database.windows.net/Cody-IRS-Data?driver=SQL+Server+Native+Client+11.0',
+    #    echo=True, connect_args={'interactive_timeout': 30000, 'wait_timeout': 30000})
+    #con = engine.connect()
 
-    df2016 = pd.read_sql('Tax_Data_2016',con=con)
-    df2015 = pd.read_sql('Tax_Data_2015',con=con)
-    df2014 = pd.read_sql('Tax_Data_2014',con=con)
-    df2013 = pd.read_sql('Tax_Data_2013',con=con)
+    #df2016 = pd.read_sql('Tax_Data_2016',con=con)
+    #df2015 = pd.read_sql('Tax_Data_2015',con=con)
+    #df2014 = pd.read_sql('Tax_Data_2014',con=con)
+    #df2013 = pd.read_sql('Tax_Data_2013',con=con)
     
-    #df2016 = pd.read_excel('Tax_Data_2016.xlsx')
-    #df2015 = pd.read_excel('Tax_Data_2015.xlsx')
-    #df2014 = pd.read_excel('Tax_Data_2014.xlsx')
-    #df2013 = pd.read_excel('Tax_Data_2013.xlsx')
+    df2016 = pd.read_excel('Tax_Data_2016.xlsx')
+    df2015 = pd.read_excel('Tax_Data_2015.xlsx')
+    df2014 = pd.read_excel('Tax_Data_2014.xlsx')
+    df2013 = pd.read_excel('Tax_Data_2013.xlsx')
     
     AllYears = [df2016,df2015,df2014,df2013]
     
@@ -60,17 +60,17 @@ def BarCharts():
         dataSix = sum(df[df.agi_stub == 6][cat])
         YearsDict = {}
         x = 2013
-        for item in AllYears:
-            data1 = sum(item[item.agi_stub == 1][cat])
-            data2 = sum(item[item.agi_stub == 2][cat])
-            data3 = sum(item[item.agi_stub == 3][cat])
-            data4 = sum(item[item.agi_stub == 4][cat])
-            data5 = sum(item[item.agi_stub == 5][cat])
-            data6 = sum(item[item.agi_stub == 6][cat])
+        for yr in AllYears:
+            data1 = sum(df[(df.agi_stub == 1) & (df.TaxYear == yr)][cat])
+            data2 = sum(df[(df.agi_stub == 2) & (df.TaxYear == yr)][cat])
+            data3 = sum(df[(df.agi_stub == 3) & (df.TaxYear == yr)][cat])
+            data4 = sum(df[(df.agi_stub == 4) & (df.TaxYear == yr)][cat])
+            data5 = sum(df[(df.agi_stub == 5) & (df.TaxYear == yr)][cat])
+            data6 = sum(df[(df.agi_stub == 6) & (df.TaxYear == yr)][cat])
             newList = [data1,data2,data3,data4,data5,data6]
             YearsDict['df'+ str(x)] = newList
             x += 1
-        newestest = [sum(dfAll[dfAll.agi_stub == x]['NumTaxDue']) for x in range(1,7)]
+        newestest = [sum(df[df.agi_stub == x]['NumTaxDue']) for x in range(1,7)]
         leny = np.arange(len(labels))
         plt.ticklabel_format(style='plain',axis='y',useOffset=False)
         data = [dataOne,dataTwo,dataThree,dataFour,dataFive,dataSix]
@@ -108,29 +108,27 @@ def BarCharts():
     
     
 def HeatMap():
+    #state = state.upper()
     df, AllYears,labels = GetData()
-    StateData = [df['AGI']]
     leny = np.arange(len(labels))
-    newFrame = pd.DataFrame(df.STATE)
-    TempFrame = pd.DataFrame(df.TaxDueAmt)
-    #TempFrame2 = pd.DataFrame(dfAll.TaxYear)
-    newerFrame = pd.concat([newFrame,TempFrame],axis=1)
-    newestFrame = newerFrame.groupby(['STATE']).sum()
-    
-    
-    import matplotlib.ticker as ticker
-    
-    sns.set()
-    newestFrame = newestFrame.sort_values(['TaxDueAmt'],ascending=False)
-    newestFrame = newestFrame.head(10)
-    f,ax = plt.subplots(figsize=(10,10))
-    ax.get_xaxis().get_major_formatter().set_useOffset(False)
-    
-    sns.heatmap(newestFrame,annot=True)
+    StateFrame = df
+    StateFrame = StateFrame.loc[:,['STATE','agi_stub','TaxDueAmt']]
+    StateFrame = StateFrame.sort_values(['TaxDueAmt'],ascending=False)
+    StateGroups = StateFrame.groupby(['STATE'],as_index=False).sum()
+    #StateGroups = StateGroups.nlargest(10,columns='TaxDueAmt')
+    #StateFrame = StateFrame[StateFrame.ZIPCODE.isin(TopZips.ZIPCODE)]
+    #StateFrame.ZIPCODE = pd.to_numeric(StateFrame.ZIPCODE)
+    StateFrame.agi_stub = pd.to_numeric(StateFrame.agi_stub)
+    StateTable = StateFrame.pivot_table(index='STATE',columns='agi_stub',values='TaxDueAmt',aggfunc='sum')
+    #StateTable = StateTable.nlargest(10,columns='TaxDueAmt')
+    #StateTable = StateTable.sortlevel(level=0,ascending=True,inplace=True)
+    f, ax = plt.subplots(figsize = (9,12))
+    sns.heatmap(StateTable,annot=True,ax=ax,linewidths=.5,fmt='d')
     plt.xlabel('AGI Range')
-    plt.ylabel('Zip Codes with Most Tax Due - ' + str(state))
+    plt.ylabel('States with most tax due')
     plt.xticks(leny,labels)
-    #plt.ticklabel_format(style='plain',axis='y')
+    plt.savefig('C:/Users/mes12/Desktop/Fall 2018 - USU/MIS 5400/Final Project/static/HeatMap1.jpg')# + str(state) + '.jpg')
+    return 'Heat Map successfully created.'
     
     plt.show()
 
@@ -155,6 +153,6 @@ def HeatMap2(state):
     plt.savefig('C:/Users/mes12/Desktop/Fall 2018 - USU/MIS 5400/Final Project/static/HeatMap.jpg')# + str(state) + '.jpg')
     return 'Heat Map successfully created.'
 
-#BarCharts(dfAll)
+#BarCharts()
 #HeatMap(dfAll)
 #HeatMap2(dfAll)
