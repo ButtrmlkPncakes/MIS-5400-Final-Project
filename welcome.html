@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<style>
+table, th, td {
+  border: 1px solid black;
+}
+</style>
+Welcome to my (super ghetto) API! <br><br>
+
+This API hosts IRS data for every state and zip code in the US. For basic queries, search using these url extensions:<br><br>
+<table>
+<thead><tr><th>Item</th><th>tag</th></tr></thead>
+<tbody>
+<tr><td>All Data by Year</td><td>/taxdata/(year)</td></tr>
+<tr><td>Data by State & Year</td><td>/taxdata/(year)/state/(state)</td></tr>
+<tr><td>Data by Zip Code & Year</td><td>/taxdata/(year)/zipcode/(zip)</td></tr>
+<tr><td>Info on retrieving graphs & visuals</td><td>/visuals/info</td></tr>
+</tbody>
+</table>
+<br><br>
+These are the elements and their corresponding column names in the database you can use to query for 
+various elements
+<br><br>
+<table>
+<thead><tr><th>Column Name</th><th>Element</th></tr></thead>
+<tbody>
+<tr><td>STATE</td><td>State</td></tr>
+<tr><td>ZIPCODE</td><td>Zip Code (US Only)</td></tr>
+<tr><td>agi_stub</td><td>Adjusted Gross Income buckets for grouping taxpayers.<br> Values range from 1 to 6</td></tr>
+<tr><td>NumOfReturns</td><td>Total number of tax returns filed from that state and zip within the given agi bucket</td></tr>
+<tr><td>NumOfSingleReturns</td><td>The number of returns filed with a filing status of Single</td></tr>
+<tr><td>NumOfJointReturns</td><td>Number of returns filed with a Married, Filing Joint status</td></tr>
+<tr><td>NumOfHoHReturns</td><td>Number of returns filed with a Head of Household status</td></tr>
+<tr><td>AGI</td><td>Adjusted Gross Income. This is total income after adjustments <br>(i.e. moving expenses, student loan interest, etc.)</td></tr>
+<tr><td>NumTaxIncome</td><td>The total number of returns filed that had taxable income <br>after adjustments, standard/itemized deductions, and personal exemptions</td></tr>
+<tr><td>TaxIncomeAmt</td><td>The amount of taxable income</td></tr>
+<tr><td>NumAMT</td><td>The number of returns who had to pay additional AMT tax</td></tr>
+<tr><td>AMTAmt</td><td>The amount of Alternative Minimum Tax due</td></tr>
+<tr><td>NumWithIncomeTax</td><td>The number of returns that owed taxes <br>(calculated before prepayments, other taxes, or refundable credits)</td></tr>
+<tr><td>IncomeTaxAmt</td><td>The amount of income tax owed before prepayments, <br>other taxes, or refundable credits</td></tr>
+<tr><td>NumTaxLiability</td><td>The number of returns with with taxes owed <br>(calculated after other taxes but before prepayments/refundable credits)</td></tr>
+<tr><td>TaxLiabAmt</td><td>The amount of taxes owed <br>(calculated after other taxes but before prepayments or refundable credits)</td></tr>
+<tr><td>NumTaxDue</td><td>The number of returns who owed taxes at the end <br>of their return (after prepayments and refundable credits)</td></tr>
+<tr><td>TaxDueAmt</td><td>The amount of taxes owed after prepayments and refundable credits</td></tr>
+<tr><td>NumOverpay</td><td>The number of returns that were owed a refund <br>after prepayments and refundable credits</td></tr>
+<tr><td>OverpayAmt</td><td>The amount of refunds owed after prepayments and refundable credits</td></tr>
+</tbody>
+</table>
